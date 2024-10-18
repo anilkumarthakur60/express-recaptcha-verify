@@ -1,6 +1,7 @@
 import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
 import axios from "axios";
+import cors from "cors";
 dotenv.config();
 
 /*
@@ -10,6 +11,9 @@ dotenv.config();
  */
 const app: Express = express();
 const port = process.env.PORT || 3000;
+
+/* Enable CORS for all routes */
+app.use(cors());
 
 /* Define a route for the root path ("/")
  using the HTTP GET method */
