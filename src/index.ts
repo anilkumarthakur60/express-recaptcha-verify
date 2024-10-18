@@ -12,8 +12,10 @@ dotenv.config();
 const app: Express = express();
 const port = process.env.PORT || 3000;
 
-/* Enable CORS for all routes */
-app.use(cors());
+/* Enable CORS for the specific domains */
+app.use(cors({
+  origin: ["https://vue-recaptcha3.vercel.app", "http://localhost:3000"]
+}));
 
 /* Define a route for the root path ("/")
  using the HTTP GET method */
