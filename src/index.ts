@@ -14,7 +14,7 @@ const port = process.env.PORT || 3000;
 
 /* Enable CORS for the specific domains */
 app.use(cors({
-  origin: ["https://vue-recaptcha3.vercel.app", "http://localhost:3000"]
+  origin: ["https://vue-recaptcha3.vercel.app", "http://localhost:3000", "http://localhost:5173"]
 }));
 
 /* Define a route for the root path ("/")
@@ -47,6 +47,32 @@ app.listen(port, () => {
 app.post("/verify-captcha", async (req: Request, res: Response) => {
   const recaptchaResponse = req.body.captcha_token;
   const secretKey = process.env.RECAPTCHA_SECRET_KEY;
+
+  if (!recaptchaResponse) {
+    return res.status(400).json({ message: "recaptchaResponse is required" });
+  }
+  try {
+    const response = await axios.post(
+      `https://www.google.com/recaptcha/api/siteverify`,
+      {},
+      {
+        params: {
+          secret: secretKey,
+          response: recaptchaResponse
+        }
+      }
+    );
+    console.log("response", response.data);
+    res.json(response.data);
+  } catch (error) {
+    res.status(500).json({ error: error });
+  }
+});
+
+
+app.post("/verify-captcha-v2", async (req: Request, res: Response) => {
+  const recaptchaResponse = req.body.captcha_token;
+  const secretKey = process.env.RECAPTCHA_SECRET_KEY_V2;
 
   if (!recaptchaResponse) {
     return res.status(400).json({ message: "recaptchaResponse is required" });
